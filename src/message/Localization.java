@@ -38,5 +38,10 @@ public class Localization implements Translator{
 	public Enumeration<String> getKeys(){
 		return messages.getKeys();
 	}
+	
+	@Override
+	public boolean isDebug() {
+		return debug;
+	}
 
 }
