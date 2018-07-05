@@ -7,4 +7,6 @@ public interface Translator {
 	
 	public void setDegug(boolean debug);
 	
+	public boolean isDebug();
+	
 }
