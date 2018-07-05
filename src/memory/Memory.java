@@ -18,9 +18,8 @@ public class Memory implements Translator{
 	
 	@Override
 	public String translate(String key) {
-		try{
-			return map.get(key);
-		}catch (Exception e){
+		String message = map.get(key);
+		if(message == null){
 			if(debug){
 				System.err.println("Missing key: " + key);
 				return "??? " + key + " !!!";
@@ -28,6 +27,7 @@ public class Memory implements Translator{
 				return key;
 			}
 		}
+		return message;
 	}
 
 	@Override
@@ -38,6 +38,11 @@ public class Memory implements Translator{
 	
 	public Set<String> getKeys(){
 		return map.keySet();
+	}
+
+	@Override
+	public boolean isDebug() {
+		return debug;
 	}
 
 }
