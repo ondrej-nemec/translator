@@ -16,11 +16,13 @@ public abstract class TranslatorTest {
 	protected String key;
 	protected String message;
 	protected boolean debug;
+	protected String[] variables;
 	
-	public TranslatorTest(String key, String message, boolean debug) {
+	public TranslatorTest(String key, String message, boolean debug, String[] variables) {
 		this.key = key;
 		this.message = message;
 		this.debug = debug;
+		this.variables = variables;
 	}
 	
 	@Test
@@ -34,7 +36,7 @@ public abstract class TranslatorTest {
 		translator.setDegug(false);
 		assertFalse(translator.isDebug());
 	}
-	
+		
 	@Test
 	public void testTranslateWorks(){
 		Translator translator = getTranslator();
@@ -42,16 +44,42 @@ public abstract class TranslatorTest {
 		assertEquals(message, translator.translate(key));
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testTranslateWithVariablesThrowsWhenVariableDontExist(){
+		Translator translator = getTranslator();
+		translator.translate("too %many% %variables%", "var");
+	}
+	
+	@Test
+	public void testTranslateWithVariablesWorks(){
+		Translator translator = getTranslator();
+		assertEquals(
+				"You choose: 4 pieces, 7 liters",
+				translator.translate(
+						"test.choose%pieces%%liters%",
+						new Integer(4).toString(),
+						new Integer(7).toString())
+			);
+		translator.setVariableSeparators('<', '>');
+		assertEquals(
+				"You choose: 8 pieces, 45 liters",
+				translator.translate(
+						"test.choose<pieces><liters>",
+						new Integer(8).toString(),
+						new Integer(45).toString())
+			);
+	}
+	
 	
 	protected abstract Translator getTranslator();
 	
 	@Parameters
 	public static Collection<Object[]> dataSet(){
 		return Arrays.asList(
-					new Object[]{"test.success", "Successful test", false},
-					new Object[]{"test.success", "Successful test", true},
-					new Object[]{"test.failure", "test.failure", false},
-					new Object[]{"test.failure", "??? test.failure !!!", true}
+					new Object[]{"test.success", "Successful test", false, null},
+					new Object[]{"test.success", "Successful test", true, null},
+					new Object[]{"test.failure", "test.failure", false, null},
+					new Object[]{"test.failure", "??? test.failure !!!", true, null}
 				);
 	}
 	

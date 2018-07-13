@@ -1,15 +1,16 @@
-package memory;
+package localization;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.Enumeration;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import translator.Translator;
 
-public class Memory implements Translator{
+public class Localization implements Translator{
 
-	private final Map<String, String> map;
+	private final ResourceBundle messages;
 	
 	private boolean debug;
 	
@@ -17,15 +18,16 @@ public class Memory implements Translator{
 	
 	private char endSeparator = '%';
 	
-	public Memory(Map<String, String> map) {
-		this.map = map;
+	public Localization(String path) {
+		this.messages = ResourceBundle.getBundle(path);
 		this.debug = false;
 	}
 	
 	@Override
 	public String translate(String key) {
-		String message = map.get(key);
-		if(message == null){
+		try{
+			return messages.getString(key);
+		}catch (MissingResourceException e){
 			if(debug){
 				System.err.println("Missing key: " + key);
 				return "??? " + key + " !!!";
@@ -33,9 +35,8 @@ public class Memory implements Translator{
 				return key;
 			}
 		}
-		return message;
 	}
-	
+
 	@Override
 	public String translate(String key, String... variables) {
 		String message = translate(key);
@@ -54,7 +55,12 @@ public class Memory implements Translator{
 	@Override
 	public void setVariableSeparators(char start, char end) {
 		this.startSeparator = start;
-		this.endSeparator = end;		
+		this.endSeparator = end;
+	}
+
+	@Override
+	public char getVariableStartSeparator() {
+		return startSeparator;
 	}
 
 	@Override
@@ -63,21 +69,14 @@ public class Memory implements Translator{
 	}
 	
 	@Override
-	public char getVariableStartSeparator() {
-		return startSeparator;
-	}
-
-
-	@Override
 	public void setDegug(boolean debug) {
 		this.debug = debug;
-		
 	}
 	
-	public Set<String> getKeys(){
-		return map.keySet();
+	public Enumeration<String> getKeys(){
+		return messages.getKeys();
 	}
-
+	
 	@Override
 	public boolean isDebug() {
 		return debug;
