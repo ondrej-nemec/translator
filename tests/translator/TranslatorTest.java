@@ -11,7 +11,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public abstract class TranslatorTest {
+public class TranslatorTest {
 
 	protected String key;
 	protected String message;
@@ -27,7 +27,7 @@ public abstract class TranslatorTest {
 	
 	@Test
 	public void testSetDebugWorks(){
-		Translator translator = getTranslator();
+		Translator translator = new Translator("translator/messages");
 		assertFalse(translator.isDebug());
 		
 		translator.setDegug(true);
@@ -39,20 +39,20 @@ public abstract class TranslatorTest {
 		
 	@Test
 	public void testTranslateWorks(){
-		Translator translator = getTranslator();
+		Translator translator = new Translator("translator/messages");
 		translator.setDegug(debug);
 		assertEquals(message, translator.translate(key));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void testTranslateWithVariablesThrowsWhenVariableDontExist(){
-		Translator translator = getTranslator();
+		Translator translator = new Translator("translator/messages");
 		translator.translate("too %many% %variables%", "var");
 	}
 	
 	@Test
 	public void testTranslateWithVariablesWorks(){
-		Translator translator = getTranslator();
+		Translator translator = new Translator("translator/messages");
 		assertEquals(
 				"You choose: 4 pieces, 7 liters",
 				translator.translate(
@@ -69,10 +69,7 @@ public abstract class TranslatorTest {
 						new Integer(45).toString())
 			);
 	}
-	
-	
-	protected abstract Translator getTranslator();
-	
+		
 	@Parameters
 	public static Collection<Object[]> dataSet(){
 		return Arrays.asList(
