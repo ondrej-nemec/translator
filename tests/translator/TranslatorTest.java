@@ -18,15 +18,13 @@ public class TranslatorTest {
 	
 	@Test
 	public void testTranslateNotExistingKey(){
-		fail();
+		assertEquals("not-existing-key", translator.translate("not-existing-key"));
 	}
 	
 	@Test
 	public void testTranslateCountNotExistingCount(){
-		fail();
+		assertEquals("translate.works : 1", translator.translate("translate.works", 1));
 	}
-	
-	/****************/
 	
 	@Test
 	public void testTranslateWorks(){

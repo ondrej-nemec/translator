@@ -62,12 +62,10 @@ public class Translator {
 			return resource.getString(key);
 		}catch (MissingResourceException e){
 			if(debug){
-				//TODO
-				System.err.println("Missing key: " + key);
-				return "??? " + key + " !!!";
-			}else{
-				return key;
+				System.err.println("MISSING KEY: " + key);
 			}
+			return key;
+			
 		}
 	}
 	
@@ -113,7 +111,10 @@ public class Translator {
 				}
 			}			
 		}
-		return key + " : " + count; //TODO
+		if(debug){
+			System.err.println("MISSING COUNT: " + key + " : " + count);
+		}
+		return key + " : " + count;
 	}
 	
 	private String replaceAuxStringWithVariables(String message, String... variables) {
