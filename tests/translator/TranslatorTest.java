@@ -3,94 +3,104 @@ package translator;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
 public class TranslatorTest {
-
-	private String path = "translator/messages";
 	
-	private String key;
-	private String message;
-	private boolean debug;
-	private int count;
+	private Translator translator;
 	
-	public TranslatorTest(String key, String message, boolean debug, int count) {
-		this.key = key;
-		this.message = message;
-		this.debug = debug;
-		this.count = count;
+	public TranslatorTest() {
+		translator = new Translator("translator/messages");
 	}
-
-	@Test(expected = RuntimeException.class)
-	public void testTranslateWithVariablesThrowsWhenVariableDontExist(){
-		Translator translator = new Translator(path);
-		translator.translate("too.many.variables", "var");
+	
+	@Test
+	public void testTranslateNotExistingKey(){
+		fail();
 	}
-			
+	
+	@Test
+	public void testTranslateCountNotExistingCount(){
+		fail();
+	}
+	
+	/****************/
+	
 	@Test
 	public void testTranslateWorks(){
-		if(key.equals("test.count"))
-			return;
-		Translator translator = new Translator(path);
-		translator.setDegug(debug);
-		assertEquals(message, translator.translate(key));
-	}
-
-	@Test
-	public void testTranslateWithVariablesWorks(){
-		Translator translator = new Translator(path);
 		assertEquals(
-				"You choose: 4 pieces, 7 liters",
+				"Translated message",
+				translator.translate("translate.works")
+			);
+	}
+	
+	@Test
+	public void testTranslateFromWorks(){
+		translator.addResource("from", ResourceBundle.getBundle("translator/from"));
+		assertEquals(
+				"Translated message from",
+				translator.translateFrom("from", "translate.from.works")
+			);
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void testTranslateWithVariableThrowWhenVariableDontExist(){
+		translator.translate("too.many.variables", "var");
+	}
+	
+	@Test
+	public void testTranslateWithVariableWorks(){
+		assertEquals(
+				"Variable: var",
 				translator.translate(
-						"test.choose.pieces.liters.%%",
+						"test.one.variable",
+						"var"
+					)
+			);
+		assertEquals(
+				"Variables: 4, four",
+				translator.translate(
+						"test.two.variables.%%",
 						new Integer(4).toString(),
-						new Integer(7).toString())
+						"four"
+					)
 			);
 		translator.setVariableSeparators('<', '>');
 		assertEquals(
-				"You choose: 8 pieces, 45 liters",
+				"Variables: varA, varB",
 				translator.translate(
-						"test.choose.pieces.liters.<>",
-						new Integer(8).toString(),
-						new Integer(45).toString())
-			);
-	}
-	
-	@Test
-	public void testTranslateWithCountWorks(){
-		if(!key.equals("test.count"))
-			return;
-		Translator translator = new Translator(path);
-		assertEquals(
-				message,
-				translator.translate(key, count)
+						"test.two.variables.<>",
+						"varA",
+						"varB"
+					)
 			);
 	}
 		
-	@Parameters
-	public static Collection<Object[]> dataSet(){
-		return Arrays.asList(
-					new Object[]{"test.success", "Successful test", false, 0},
-					new Object[]{"test.success", "Successful test", true, 0},
-					new Object[]{"test.failure", "test.failure", false, 0},
-					new Object[]{"test.failure", "??? test.failure !!!", true, 0},
-					
-					
-					new Object[]{"test.count", "No years", false, 0},
-					new Object[]{"test.count", "1 year", false, 1},
-					new Object[]{"test.count", "years: 3", false, 3},
-					new Object[]{"test.count", "comma, year-5", false, 5},
-					new Object[]{"test.count", "comma, year-6", false, 6},
-					new Object[]{"test.count", "more: 9", false, 9},
-					new Object[]{"test.count", "less year", false, -1}
+	@Test
+	public void testTranslateWithCountWorks(){
+		List<Object[]> input = Arrays.asList(
+				new Object[]{"Less", -3},
+				new Object[]{"Negative", -1},
+				new Object[]{"Zero value", 0},
+				new Object[]{"Exactly: 1", 1},
+				new Object[]{"Between: 3", 3},
+				new Object[]{"Between: 4", 4},
+				new Object[]{"Separator: 5", 5},
+				new Object[]{"Separator: 6", 6},
+				new Object[]{"More: 9", 9}
+		);
+		for(int i = 0; i < input.size(); i++){
+			assertEquals(
+					input.get(i)[0],
+					translator.translate(
+							"test.count",
+							Integer.parseInt(
+									input.get(i)[1].toString()
+											)
+						)
 				);
+		}
 	}
-	
-	
 }
