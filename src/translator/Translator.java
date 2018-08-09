@@ -1,15 +1,94 @@
 package translator;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Translator {
+	
+	class Info implements Serializable{
+		private static final long serialVersionUID = 1L;
+		
+		private String name;
+		private String bundleName;
+		private String key;
+		private String[] variables;
+		
+		public Info(String name, String bundleName, String key) {
+			super();
+			this.name = name;
+			this.bundleName = bundleName;
+			this.key = key;
+		}	
+		public Info(String name, String bundleName, String key, String[] variables) {
+			super();
+			this.name = name;
+			this.bundleName = bundleName;
+			this.key = key;
+			this.variables = variables;
+		}
+		public Info(String name, String bundleName, String key, int count) {
+			super();
+			this.name = name;
+			this.bundleName = bundleName;
+			this.key = key;
+			this.variables = new String[]{new Integer(count).toString()};
+		}
+		public String getName() {
+			return name;
+		}
+		public String getBundleName() {
+			return bundleName;
+		}
+		public String getKey() {
+			return key;
+		}
+		public String[] getVariables() {
+			return variables;
+		}
+		@Override
+		public String toString() {
+			String result ="{key=" + key + ", ResourceBundleName=" + bundleName + ", name=" + name;
+			if(variables != null){
+				result += ",[";
+				for (String s : variables) {
+					result += s + ",";
+				}
+				result += "]";
+			}
+				
+			return result + "}";
+		}
+		@Override
+		public boolean equals(Object o) {
+			if(!(o instanceof Info))
+				return false;
+			Info i = (Info)o;
+			if(!name.equals(i.name))
+				return false;
+			if(!bundleName.equals(i.bundleName))
+				return false;
+			if(!key.equals(i.key))
+				return false;
+			if(variables.length != i.variables.length)
+				return false;
+			for(int a = 0; a < i.variables.length; a++){
+				if(!variables[a].equals(i.variables[a]))
+					return false;
+			}
+			return true;
+		}
+	}
 
-	private boolean debug;
+	private Logger logger = null;
+	
+	private Info info;
 	
 	private char startSeparator = '%';
 	
@@ -28,32 +107,52 @@ public class Translator {
 		this.namedMessages = new HashMap<>();
 	}
 	
+	public Translator(String path, Logger logger) {
+		this.defaultMessages = ResourceBundle.getBundle(path);
+		this.namedMessages = new HashMap<>();
+		this.logger = logger;
+	}
+	
 	public Translator(String path, Map<String, ResourceBundle> otherMessages) {
 		this.defaultMessages = ResourceBundle.getBundle(path);
 		this.namedMessages = otherMessages;
-	} 
+	}
+	
+	public Translator(String path, Map<String, ResourceBundle> otherMessages, Logger logger) {
+		this.defaultMessages = ResourceBundle.getBundle(path);
+		this.namedMessages = otherMessages;
+		this.logger = logger;
+	}
+	
+	/************************/
 	
 	public String translateFrom(String from, String key){
+		this.info = new Info(from, namedMessages.get(from).getBaseBundleName(), key);
 		return translate(namedMessages.get(from), key);
 	}
 	
 	public String translateFrom(String from, String key, String... variables){
+		this.info = new Info(from, namedMessages.get(from).getBaseBundleName(), key, variables);
 		return translate(namedMessages.get(from), key, variables);
 	}
 	
 	public String translateFrom(String from, String key, int count){
+		this.info = new Info(from, namedMessages.get(from).getBaseBundleName(), key, count);
 		return translate(namedMessages.get(from), key, count);
 	}
 	
 	public String translate(String key) {
+		this.info = new Info("default", defaultMessages.getBaseBundleName(), key);
 		return translate(defaultMessages, key);
 	}
 	
 	public String translate(String key, String... variables) {
+		this.info = new Info("default", defaultMessages.getBaseBundleName(), key, variables);
 		return translate(defaultMessages, key, variables);
 	}
 	
 	public String translate(String key, int count) {
+		this.info = new Info("default", defaultMessages.getBaseBundleName(), key, count);
 		return translate(defaultMessages, key, count);
 	}
 	
@@ -61,9 +160,8 @@ public class Translator {
 		try{
 			return resource.getString(key);
 		}catch (MissingResourceException e){
-			if(debug){
-				System.err.println("MISSING KEY: " + key);
-			}
+			if(logger != null)
+				logger.log(Level.WARNING, "Missing key - " + info.toString());
 			return key;
 			
 		}
@@ -111,13 +209,13 @@ public class Translator {
 				}
 			}			
 		}
-		if(debug){
-			System.err.println("MISSING COUNT: " + key + " : " + count);
-		}
+		if(logger != null)
+			logger.log(Level.WARNING, "Missing count: " + count + "; " + info);
 		return key + " : " + count;
 	}
 	
 	private String replaceAuxStringWithVariables(String message, String... variables) {
+		int vCount = variables.length;
 		Pattern patern = Pattern.compile("(" + startSeparator + "[^ ]*" + endSeparator + ")");
 		Matcher matcher = patern.matcher(message);
 		int i = 0;
@@ -126,7 +224,13 @@ public class Translator {
 				throw new RuntimeException("Too little variables in array: " + i);
 			message = message.replace(matcher.group(), variables[i]);
 			i++;
+			vCount--;
 		}
+		if(logger != null && vCount != 0)
+			logger.log(
+					Level.INFO, 
+					"More variables given: " + variables.length+ "; " + info
+				);
 		return message;
 	}
 	
@@ -139,20 +243,16 @@ public class Translator {
 		this.endSeparator = end;
 	}
 	
+	public Logger getLogger(){
+		return logger;
+	}
+	
 	public char getVariableStartSeparator() {
 		return startSeparator;
 	}
 	
 	public char getVariableEndSeparator() {
 		return endSeparator;
-	}
-	
-	public void setDegug(boolean debug) {
-		this.debug = debug;
-	}
-	
-	public boolean isDebug() {
-		return debug;
 	}
 	
 	public void setMessageSeparator(String separator){
