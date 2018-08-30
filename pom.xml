@@ -4,6 +4,7 @@
   <artifactId>translator</artifactId>
   <version>1.0</version>
   <build>
+    <testSourceDirectory>src/tests/java</testSourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
