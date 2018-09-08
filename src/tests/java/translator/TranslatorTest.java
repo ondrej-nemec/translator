@@ -19,7 +19,7 @@ public class TranslatorTest {
 	
 	public TranslatorTest() {
 		this.logger = mock(Logger.class);
-		translator = new Translator("translator/messages", logger);
+		translator = new Translator("messages", logger);
 	}
 	
 	@Test
@@ -27,7 +27,7 @@ public class TranslatorTest {
 		assertEquals("not-existing-key", translator.translate("not-existing-key"));
 		verify(logger).log(
 				Level.WARNING,
-				"Missing key - {key=not-existing-key, ResourceBundleName=translator/messages, name=default}"
+				"Missing key - {key=not-existing-key, ResourceBundleName=messages, name=default}"
 			);
 	}
 	
@@ -36,7 +36,7 @@ public class TranslatorTest {
 		assertEquals("translate.works : 1", translator.translate("translate.works", 1));
 		verify(logger).log(
 				Level.WARNING,
-				"Missing count: 1; {key=translate.works, ResourceBundleName=translator/messages, name=default,[1,]}");
+				"Missing count: 1; {key=translate.works, ResourceBundleName=messages, name=default,[1,]}");
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class TranslatorTest {
 	
 	@Test
 	public void testTranslateFromWorks(){
-		translator.addResource("from", ResourceBundle.getBundle("translator/from"));
+		translator.addResource("from", ResourceBundle.getBundle("from"));
 		assertEquals(
 				"Translated message from",
 				translator.translateFrom("from", "translate.from.works")
@@ -81,7 +81,7 @@ public class TranslatorTest {
 		verify(logger).log(
 				Level.INFO,
 				"More variables given: 2; "
-				+ "{key=test.one.variable, ResourceBundleName=translator/messages, name=default,[var,var2,]}");
+				+ "{key=test.one.variable, ResourceBundleName=messages, name=default,[var,var2,]}");
 		assertEquals(
 				"Variables: 4, four",
 				translator.translate(
