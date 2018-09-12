@@ -12,7 +12,7 @@
 Library offers management of `ResourceBundle`s, translate message with count and adding variables to message.
 ## How to install
 ### Download:
-<a href="https://ondrej-nemec.github.io/jars/translator-1.0.jar">Download jar</a>
+<a href="https://ondrej-nemec.github.io/jars/translator-1.0.jar" target=_blank>Download jar</a>
 ### Maven:
 
 ```xml
