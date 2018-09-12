@@ -6,22 +6,22 @@
 * [Usage](#usage)
 	* [Constructor](#constructor)
 	* [Translate](#translate)
-	* [ `*.properties` syntax ](#*.properties_syntax)
+	* [Properties file syntax](properties_file_syntax)
 
 ## Description
 Library offers management of `ResourceBundle`s, translate message with count and adding variables to message.
 ## How to install
 ### Download:
-<a href="">Unter construction</a>
+<a href="https://ondrej-nemec.github.io/jars/translator-1.0.jar">Download jar</a>
 ### Maven:
 
-`
+```xml
 <dependency>
   <groupId>io.github.ondrej-nemec.translator</groupId>
   <artifactId>translator</artifactId>
   <version>1.0</version>
 </dependency>
-`
+```
 
 ## Usage
 ### Constructor
@@ -70,7 +70,7 @@ translator.translate("translate.count", -1); // return: 'translate.count : -1'
 ```
 If you wont to use another resource use `translateFrom(String resourceName, String key)` or `translateFrom(String from, String key, String... variables)` or `String translateFrom(String from, String key, int count)`
 
-### *.properties syntax
+### Properties file syntax
 For messages without count or variables syntax remains.
 ```java
 key=message
