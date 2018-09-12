@@ -1,9 +1,12 @@
 # Translator
-**Newest version:**1.0
+**Newest version:** 1.0
 
 * [Description](#description)
 * [How to install](#how-to-install)
 * [Usage](#usage)
+	* [Constructor](#constructor)
+	* [Translate](#translate)
+	* [ `*.properties` syntax ](#*.properties_syntax)
 
 ## Description
 Library offers management of `ResourceBundle`s, translate message with count and adding variables to message.
@@ -41,8 +44,9 @@ traslate.test=Testing translate
 ```java
 // translate(String key) 
 translator.translate("translate.test"); // return: 'Testing translate'
+translator.translate("not-existing-key"); // return: 'not-existing-key'
 ```
-Replace some variables in returned message. If in text are more variables that given, RuntimeException will be throwed. If are given more variables that are in text INFO will be logged.
+Replace some variables in returned message. If in text are more variables that given, `RuntimeException` will be throwed. If are given more variables that are in text INFO will be logged.
 ```java
 // *.properties file
 translate.variables=Total price %price% %currency%
@@ -50,8 +54,10 @@ translate.variables=Total price %price% %currency%
 ```java
 // translate(String key, String... variables)
 translator.translate("translate.variables", 1000+"", "EUR"); // return: 'Total price 1000 EUR'
+translator.translate("translate.variables", 1000+""); // `RuntimeException` throwed
+translator.translate("translate.variables", 1000+"", "EUR", "currency"); // return: 'Total price 1000 EUR'
 ```
-Select message depending on coun and replace variable with count. If given count does not foud, WARNING will be logged and **key + ' : ' + count returned.**
+Select message depending on count and replace variable with count. If given count does not found, WARNING will be logged and **key + ' : ' + count returned.**
 ```java
 // *.properties file
 translate.count=1~You are only one year old;2<=~You are %years% years old
@@ -60,8 +66,25 @@ translate.count=1~You are only one year old;2<=~You are %years% years old
 // translate(String key, int count)
 translator.translate("translate.count", 1); // return: 'You are only one year old'
 translator.translate("translate.count", 8); // return: 'You are 8 years old'
+translator.translate("translate.count", -1); // return: 'translate.count : -1'
 ```
 If you wont to use another resource use `translateFrom(String resourceName, String key)` or `translateFrom(String from, String key, String... variables)` or `String translateFrom(String from, String key, int count)`
 
 ### *.properties syntax
-//TODO required syntax of messages, setting, Info, rules for count
+For messages without count or variables syntax remains.
+```java
+key=message
+```
+For message with variables
+```java
+key=message %variable%
+```
+'%' is separator for variables in default, you could set variable separator using methods `setVariableSeparators(char startSeparator, char endSeparator)` - as you can see, separators can be different.
+Syntax for messages with count
+```java
+key=1~message one;2<=~other message %count%
+```
+';' separate messages, '~' separate count from message, both could be setted `setMessageSeparator(String separator)` `setCountSeparator(String separator)`.
+#### Count part of message
+`count logicOperator` - exaple: '1=' mean exactly count 1, '4>' mean everything less that 4. You could use '=', '>', '<', '<=' or '>='. You could define count like '1,5' (for 1 or 5), '1-5' (from 1 to 5), '-4--2'(from -4 to -2) or '1-3,8' (from 1 to 3 or 8).
+Remember: count is looking from left to right, so `1<~mess1;4<~other` for counts more that 4 return 'mess'.
