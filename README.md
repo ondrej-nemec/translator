@@ -11,9 +11,9 @@
 ## Description
 Library offers management of `ResourceBundle`s, translate message with count and adding variables to message.
 ## How to install
-**Download:**
+### Download:
 <a href="https://ondrej-nemec.github.io/download/translator-1.0.jar" target=_blank>Download jar</a>
-**Maven:**
+### Maven:
 ```xml
 <dependency>
   <groupId>io.github.ondrej-nemec.translator</groupId>
@@ -67,7 +67,7 @@ translator.translate("translate.count", 1); // return: 'You are only one year ol
 translator.translate("translate.count", 8); // return: 'You are 8 years old'
 translator.translate("translate.count", -1); // return: 'translate.count : -1'
 ```
-If you wont to use another resource use `translateFrom(String resourceName, String key)` or `translateFrom(String from, String key, String... variables)` or `String translateFrom(String from, String key, int count)`
+If you wont to use another resource use `translateFrom(String resourceName, String key)` or `translateFrom(String resourceName, String key, String... variables)` or `String translateFrom(String resourceName, String key, int count)`
 
 ### Properties file syntax
 For messages without count or variables syntax remains.
