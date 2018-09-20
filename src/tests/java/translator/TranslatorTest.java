@@ -3,14 +3,17 @@ package translator;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
+@RunWith(JUnitParamsRunner.class)
 public class TranslatorTest {
 	
 	private Translator translator;
@@ -62,14 +65,7 @@ public class TranslatorTest {
 	}
 	
 	@Test
-	public void testTranslateWithVariableWorks(){
-		assertEquals(
-				"Variable: var",
-				translator.translate(
-						"test.one.variable",
-						"var"
-					)
-			);
+	public void testTranslateWithVariablesMoreVariablesLogged() {
 		assertEquals(
 					"Variable: var",
 					translator.translate(
@@ -82,28 +78,50 @@ public class TranslatorTest {
 				Level.INFO,
 				"More variables given: 2; "
 				+ "{key=test.one.variable, ResourceBundleName=messages, name=default,[var,var2,]}");
+	}
+	
+	@Test
+	@Parameters
+	public void testTranslateWithVariableWorks(String expectedMessage, String key, char start, char end, String... variables){
+		if (start != '\u0000' && end != '\u0000')
+			translator.setVariableSeparators(start, end);
 		assertEquals(
-				"Variables: 4, four",
+				expectedMessage,
 				translator.translate(
-						"test.two.variables.%%",
-						new Integer(4).toString(),
-						"four"
-					)
-			);
-		translator.setVariableSeparators('<', '>');
-		assertEquals(
-				"Variables: varA, varB",
-				translator.translate(
-						"test.two.variables.<>",
-						"varA",
-						"varB"
+						key,
+						variables
 					)
 			);
 	}
+	
+	public Object[] parametersForTestTranslateWithVariableWorks() {
+		return new Object[]{
+				new Object[]{
+					"Variable: var", "test.one.variable", '\u0000', '\u0000', "var"
+				},
+				new Object[]{
+					"Variables: 4, four", "test.two.variables.%%", '\u0000', '\u0000', new Integer(4).toString(), "four"
+				},
+				new Object[]{
+					"Variables: varA, varB", "test.two.variables.<>", '<', '>', "varA", "varB"
+				}
+		};
+	}
 		
 	@Test
-	public void testTranslateWithCountWorks(){
-		List<Object[]> input = Arrays.asList(
+	@Parameters
+	public void testTranslateWithCountWorks(String expectedMessage, int count){
+		assertEquals(
+			expectedMessage,
+			translator.translate(
+				"test.count",
+				count
+			)
+		);
+	}
+	
+	public Object[] parametersForTestTranslateWithCountWorks() {
+		return new Object[] {
 				new Object[]{"Less", -3},
 				new Object[]{"Negative", -1},
 				new Object[]{"Zero value", 0},
@@ -113,17 +131,6 @@ public class TranslatorTest {
 				new Object[]{"Separator: 5", 5},
 				new Object[]{"Separator: 6", 6},
 				new Object[]{"More: 9", 9}
-		);
-		for(int i = 0; i < input.size(); i++){
-			assertEquals(
-					input.get(i)[0],
-					translator.translate(
-							"test.count",
-							Integer.parseInt(
-									input.get(i)[1].toString()
-											)
-						)
-				);
-		}
+		};
 	}
 }
