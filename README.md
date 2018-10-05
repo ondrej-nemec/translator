@@ -15,9 +15,20 @@ Library offers management of `ResourceBundle`s, translate message with count and
 ### Download:
 <a href="https://ondrej-nemec.github.io/download/translator-1.1.jar" target=_blank>Download jar</a>
 ### Maven:
+
+After `build` tag:
+```xml
+<repositories>
+	<repository>
+	    <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
+And to `dependencies`:
 ```xml
 <dependency>
-  <groupId>io.github.ondrej-nemec.translator</groupId>
+  <groupId>com.github.ondrej-nemec</groupId>
   <artifactId>translator</artifactId>
   <version>1.1</version>
 </dependency>
