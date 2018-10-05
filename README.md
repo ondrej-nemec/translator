@@ -1,7 +1,7 @@
 # Translator
 
 [![](https://jitpack.io/v/ondrej-nemec/translator.svg)](https://jitpack.io/#ondrej-nemec/translator)
-[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/ondrej-nemec/translator/LICENSE)
+[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/ondrej-nemec/translator/blob/master/LICENSE)
 
 * [Description](#description)
 * [How to install](#how-to-install)
