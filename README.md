@@ -1,6 +1,7 @@
 # Translator
 
 [![](https://jitpack.io/v/ondrej-nemec/translator.svg)](https://jitpack.io/#ondrej-nemec/translator)
+[![MIT License](http://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/ondrej-nemec/translator/LICENSE)
 
 * [Description](#description)
 * [How to install](#how-to-install)
@@ -30,7 +31,7 @@ And to `dependencies`:
 <dependency>
   <groupId>com.github.ondrej-nemec</groupId>
   <artifactId>translator</artifactId>
-  <version>1.1</version>
+  <version>v1.1-alpha</version>
 </dependency>
 ```
 
