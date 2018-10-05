@@ -1,5 +1,6 @@
 # Translator
-**Newest version:** 1.0
+
+[![](https://jitpack.io/v/ondrej-nemec/translator.svg)](https://jitpack.io/#ondrej-nemec/translator)
 
 * [Description](#description)
 * [How to install](#how-to-install)
@@ -12,13 +13,13 @@
 Library offers management of `ResourceBundle`s, translate message with count and adding variables to message.
 ## How to install
 ### Download:
-<a href="https://ondrej-nemec.github.io/download/translator-1.0.jar" target=_blank>Download jar</a>
+<a href="https://ondrej-nemec.github.io/download/translator-1.1.jar" target=_blank>Download jar</a>
 ### Maven:
 ```xml
 <dependency>
   <groupId>io.github.ondrej-nemec.translator</groupId>
   <artifactId>translator</artifactId>
-  <version>1.0</version>
+  <version>1.1</version>
 </dependency>
 ```
 
