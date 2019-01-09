@@ -102,24 +102,24 @@ public class Translator {
 	
 	private final Map<String, ResourceBundle> namedMessages;
 	
-	public Translator(String path) {
-		this.defaultMessages = ResourceBundle.getBundle(path);
+	public Translator(ResourceBundle resource) {
+		this.defaultMessages = resource;
 		this.namedMessages = new HashMap<>();
 	}
 	
-	public Translator(String path, Logger logger) {
-		this.defaultMessages = ResourceBundle.getBundle(path);
+	public Translator(ResourceBundle resource, Logger logger) {
+		this.defaultMessages = resource;
 		this.namedMessages = new HashMap<>();
 		this.logger = logger;
 	}
 	
-	public Translator(String path, Map<String, ResourceBundle> otherMessages) {
-		this.defaultMessages = ResourceBundle.getBundle(path);
+	public Translator(ResourceBundle resource, Map<String, ResourceBundle> otherMessages) {
+		this.defaultMessages = resource;
 		this.namedMessages = otherMessages;
 	}
 	
-	public Translator(String path, Map<String, ResourceBundle> otherMessages, Logger logger) {
-		this.defaultMessages = ResourceBundle.getBundle(path);
+	public Translator(ResourceBundle resource, Map<String, ResourceBundle> otherMessages, Logger logger) {
+		this.defaultMessages = resource;
 		this.namedMessages = otherMessages;
 		this.logger = logger;
 	}
