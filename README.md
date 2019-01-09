@@ -14,7 +14,7 @@
 Library offers management of `ResourceBundle`s, translate message with count and adding variables to message.
 ## How to install
 ### Download:
-<a href="https://ondrej-nemec.github.io/download/translator-1.1.jar" target=_blank>Download jar</a>
+<a href="https://ondrej-nemec.github.io/download/translator-1.1.1.jar" target=_blank>Download jar</a>
 ### Maven:
 
 After `build` tag:
@@ -31,7 +31,7 @@ And to `dependencies`:
 <dependency>
   <groupId>com.github.ondrej-nemec</groupId>
   <artifactId>translator</artifactId>
-  <version>v1.1-alpha</version>
+  <version>v1.1.1</version>
 </dependency>
 ```
 
@@ -39,13 +39,13 @@ And to `dependencies`:
 ### Constructor
 
 ```java
-new Translator(path); // String path to you *.properties
-new Translator(path, logger);
+new Translator(resourceBundle);
+new Translator(resourceBundle, logger);
 ```
 
 ```java
-new Translator(path, otherResourceBundles); // String path to default *.properties and Map: String name -> ResourceBundle
-new Translator(path, otherResourceBundles, logger);
+new Translator(resourceBundle, otherResourceBundles); // Map: String name -> ResourceBundle
+new Translator(resourceBundle, otherResourceBundles, logger);
 ```
 ### Translate
 For simply translate you can use `translate` method. If no key found, the WARNING will be logged and **key returned**
