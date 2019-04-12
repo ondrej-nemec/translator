@@ -4,42 +4,36 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import logging.ILogger;
 
 @RunWith(JUnitParamsRunner.class)
 public class TranslatorTest {
 	
 	private Translator translator;
 	
-	private Logger logger;
+	private ILogger logger;
 	
 	public TranslatorTest() {
-		this.logger = mock(Logger.class);
+		this.logger = mock(ILogger.class);
 		translator = new Translator(ResourceBundle.getBundle("messages"), logger);
 	}
 	
 	@Test
 	public void testTranslateNotExistingKey(){
 		assertEquals("not-existing-key", translator.translate("not-existing-key"));
-		verify(logger).log(
-				Level.WARNING,
-				"Missing key - {key=not-existing-key, ResourceBundleName=messages, name=default}"
-			);
+		verify(logger).warn("Missing key - {key=not-existing-key, ResourceBundleName=messages, name=default}");
 	}
 	
 	@Test
 	public void testTranslateCountNotExistingCount(){
 		assertEquals("translate.works : 1", translator.translate("translate.works", 1));
-		verify(logger).log(
-				Level.WARNING,
-				"Missing count: 1; {key=translate.works, ResourceBundleName=messages, name=default,[1,]}");
+		verify(logger).warn("Missing count: 1; {key=translate.works, ResourceBundleName=messages, name=default,[1,]}");
 	}
 	
 	@Test
@@ -74,9 +68,7 @@ public class TranslatorTest {
 							"var2"
 						)
 				);
-		verify(logger).log(
-				Level.INFO,
-				"More variables given: 2; "
+		verify(logger).info("More variables given: 2; "
 				+ "{key=test.one.variable, ResourceBundleName=messages, name=default,[var,var2,]}");
 	}
 	

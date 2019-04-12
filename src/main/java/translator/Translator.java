@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import logging.ILogger;
+
 public class Translator {
 	
-	private Logger logger = null;
+	private final ILogger logger;
 	
 	private Info info;
 	
@@ -27,23 +27,13 @@ public class Translator {
 	
 	private final Map<String, ResourceBundle> namedMessages;
 	
-	public Translator(ResourceBundle resource) {
-		this.defaultMessages = resource;
-		this.namedMessages = new HashMap<>();
-	}
-	
-	public Translator(ResourceBundle resource, Logger logger) {
+	public Translator(ResourceBundle resource, ILogger logger) {
 		this.defaultMessages = resource;
 		this.namedMessages = new HashMap<>();
 		this.logger = logger;
 	}
 	
-	public Translator(ResourceBundle resource, Map<String, ResourceBundle> otherMessages) {
-		this.defaultMessages = resource;
-		this.namedMessages = otherMessages;
-	}
-	
-	public Translator(ResourceBundle resource, Map<String, ResourceBundle> otherMessages, Logger logger) {
+	public Translator(ResourceBundle resource, Map<String, ResourceBundle> otherMessages, ILogger logger) {
 		this.defaultMessages = resource;
 		this.namedMessages = otherMessages;
 		this.logger = logger;
@@ -87,8 +77,7 @@ public class Translator {
 		try{
 			return resource.getString(key);
 		}catch (MissingResourceException e){
-			if(logger != null)
-				logger.log(Level.WARNING, "Missing key - " + info.toString());
+			logger.warn("Missing key - " + info.toString());
 			return key;
 			
 		}
@@ -136,8 +125,7 @@ public class Translator {
 				}
 			}			
 		}
-		if(logger != null)
-			logger.log(Level.WARNING, "Missing count: " + count + "; " + info);
+		logger.warn("Missing count: " + count + "; " + info);
 		return key + " : " + count;
 	}
 	
@@ -153,11 +141,8 @@ public class Translator {
 			i++;
 			vCount--;
 		}
-		if(logger != null && vCount != 0)
-			logger.log(
-					Level.INFO, 
-					"More variables given: " + variables.length+ "; " + info
-				);
+		if(vCount != 0)
+			logger.info("More variables given: " + variables.length+ "; " + info);
 		return message;
 	}
 	
@@ -170,10 +155,6 @@ public class Translator {
 	public void setVariableSeparators(char start, char end) {
 		this.startSeparator = start;
 		this.endSeparator = end;
-	}
-	
-	public Logger getLogger(){
-		return logger;
 	}
 	
 	public char getVariableStartSeparator() {
